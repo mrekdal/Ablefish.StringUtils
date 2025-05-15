@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Security.Cryptography;
+using System.Text;
 namespace Ablefish.StringUtils
 {
     public class SqlUtils
@@ -23,5 +25,17 @@ namespace Ablefish.StringUtils
         {
             return nullableDecimal?.ToString(CultureInfo.InvariantCulture) ?? "NULL";
         }
+        public static string ComputeHash(int sourceId, string uncleanedDrugName)
+        {
+            string rawData = $"{sourceId}{uncleanedDrugName}";
+            byte[] bytes = MD5.HashData(Encoding.Unicode.GetBytes(rawData));
+            // Convert byte array to hex string
+            StringBuilder builder = new StringBuilder();
+            foreach (byte b in bytes)
+                builder.Append(b.ToString("x2"));
+
+            return builder.ToString();
+        }
+
     }
 }
