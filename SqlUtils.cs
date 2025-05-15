@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 namespace Ablefish.StringUtils
@@ -20,6 +20,13 @@ namespace Ablefish.StringUtils
         public static string IntToSql(int? nullableInt)
         {
             return nullableInt?.ToString() ?? "NULL";
+        }
+        public static string IntToSql(string? nullableInt)
+        {
+            if (string.IsNullOrEmpty(nullableInt))
+                return "NULL";
+            else
+                return nullableInt;
         }
         public static string DecimalToSql(decimal? nullableDecimal)
         {
