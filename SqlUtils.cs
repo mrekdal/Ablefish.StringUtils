@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
+
 namespace Ablefish.StringUtils
 {
     public class SqlUtils
@@ -8,10 +9,15 @@ namespace Ablefish.StringUtils
         public static string TextToSql(string? inputText)
         {
             if (inputText == null) return "NULL";
-            var outputString = inputText.Replace((char)39, '´').Trim();
-            if (outputString.Length == 0) return "NULL";
-            return string.Concat("'", outputString, "'");
+            // Remove leading and trailing quotes (both single and double)
+            var trimmed = inputText.Trim('\'', '"');
+            if (trimmed.Length == 0) return "NULL";
+            // Escape single quotes by doubling them
+            var escapedText = trimmed.Replace("'", "''");
+            // Wrap in single quotes
+            return $"'{escapedText}'";
         }
+
         public static string DateToSql(DateOnly? dateOnly)
         {
             if (dateOnly == null) return "NULL";
@@ -31,6 +37,10 @@ namespace Ablefish.StringUtils
         public static string DecimalToSql(decimal? nullableDecimal)
         {
             return nullableDecimal?.ToString(CultureInfo.InvariantCulture) ?? "NULL";
+        }
+        public static string FloatToSql(float? nullableFloat)
+        {
+            return nullableFloat?.ToString(CultureInfo.InvariantCulture) ?? "NULL";
         }
         public static string ComputeHash(int sourceId, string uncleanedDrugName)
         {
